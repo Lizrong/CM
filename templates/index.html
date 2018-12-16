@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-8">
+            <div style="background-color:#fcf8e3;">
+                <!-- 所有的一级分类 -->
+
+                <ul id="category">
+                    <li>小说分类：</li>
+                    <li {% if cate_id == 0 %}class="active"{% endif %}><a href="/">所有</a></li>
+                    {% for cate in cates %}
+                        <li {% if cate_id == cate.id %}class="active"{% endif %}><a
+                                href="/?cate_id={{ cate.id }}">{{ cate.name }}</a></li>
+                    {% endfor %}
+
+                </ul>
+
+                <ul id="books">
+                    {% for book in pager.object_list %}
+                        <li>
+                            <dl>
+                                <dt>
+                                    <img src="/static/media/{{ book.cover }} ">
+                                </dt>
+                                <dd>{{ book.name }}</dd>
+                                <dd>作者：{{ book.author }}</dd>
+                                <dd>
+                                    <a href="/book/show/{{ book.id }}/" class="btn btn-info">购买</a>
+                                </dd>
+                            </dl>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+
+                <nav aria-label="Page navigation" class="text-center">
+                    <ul class="pagination">
+                        <li>
+                            <a {% if pager.has_previous %}href="/?cate_id={{ cate_id }}&page={{ pager.previous_page_number }}"{% endif %} aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% for page in paginator.page_range %}
+                            <li {% if page_num == page %}class="active" {% endif %}><a href="/?cate_id={{ cate_id }}&page={{ page }}">{{ page }}</a></li>
+                        {% endfor %}
+                        <li>
+                            <a {% if pager.has_next %}href="/?cate_id={{ cate_id }}&page={{ pager.next_page_number }}"{% endif %} aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+
+        <div class="col-xs-4">
+
+            <div >
+                <div id="week_rank">
+                    <h5>周排行</h5>
+                    <ul>
+                        {% for book, score in rank_books %}
+                            <li>
+                                <span id="no{% if forloop.counter <= 3 %}{{ forloop.counter }}{% endif %}">{{ forloop.counter }}</span>
+                                <span class="book_name"><a href="/read/{{ book.id }}/">{{ book.name }}</a></span>
+                                <span class="rank_score text-right">{{ score }}</span>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
